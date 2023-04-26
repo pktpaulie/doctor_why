@@ -1,0 +1,76 @@
+{% extends 'base.html'%}
+<br></br>
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  
+
+<br></br>
+
+<div class = "container">
+  <h1 class= "text-center">SHOPPING CART</h1>
+  <br>
+
+  <div class = "container">
+    <form action = "" method = "GET">
+      {{product_filters.form}}
+      <input 
+      type = "submit"
+      value = "Search Products"
+      class="btn btn-outline-warning btn"/>
+    </form>
+  </div>
+
+  <br>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        
+        <th scope="col">ID</th>
+        <!-- <th scope="col">Category</th> -->
+        <th scope = "col">Product</th>
+        <th scope = "col">Unit Price(UGX)</th>
+        <th scope = "col">Stock Date</th>
+        <th scope = "col">Last Sales Date</th>
+        <th scope = "col">Options</th>
+      </tr>
+    </thead>
+    {% for inventory in inventories%}
+    <tbody>
+      <tr style="cursor: pointer; cursor: hand;">
+        <th scope="row">{{ forloop.counter }}</th>
+        <!-- <th scope="row">{{ inventory.category_name }}</th> -->
+        <th scope="row">{{ inventory.name }}</th> 
+        <th scope="row">UGX{{ inventory.cost_per_item }}</th>  
+        <th scope="row">{{ inventory.stock_date }}</th>
+        <th scope="row">UGX{{ inventory.last_sales_date }}</th> 
+        <th><a href=""
+              ><input
+                type="submit"
+                value="BUY"
+                class="btn btn-warning btn"
+                type="button"
+            /></a>
+            <a href=""
+              ><input
+                type="submit"
+                value="Cancel"
+                class="btn btn-warning btn"
+                type="button"
+            /></a>
+        </th>
+      </tr>
+    </tbody>
+    {% endfor %}
+  </table>
+  
+</div>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">Log In</a> &ensp;
+  <a href="{% url 'register' %}">Register here</a>
+{% endif %}
+
+<my-footer></my-footer>
+{% endblock%}

@@ -1,0 +1,69 @@
+{% extends "../base.html" %}
+
+{% block content %}
+{% load thumbnail %}
+{% if user.is_authenticated %}
+ 
+
+<br></br>
+<div class = "container">
+  <h1 class= "text-center">PRODUCT LIST</h1>
+  <br>
+  
+  <div class = "container">
+    <form action = "" method = "GET" class="form-group">
+      {{ inventory_filters.form }}
+      <input 
+      type = "submit"
+      value = "Search Products"
+      class="btn btn-secondary btn-sm"/>
+    </form>
+  </div>
+  <div class="content-section">
+      <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">ID</th>
+              <!-- <th scope="col">Category</th> -->
+              <th scope = "col">Product</th>
+              <!-- <th scope = "col">Image</th> -->
+              <th scope = "col">Unit Price(UGX)</th>
+              <th scope = "col">Stock Date</th>
+              <th scope = "col">Last Sales Date</th>
+              <th scope = "col">Options</th>
+            </tr>
+          </thead>
+          {% for inventory in inventories %}
+          <tbody>
+            <tr style="cursor: pointer; cursor: hand;" onclick="window.location = `{% url 'per_product' inventory.id %}`">
+              <th scope="row">{{ forloop.counter }}</th>
+              <!-- <th scope="row">{{ inventory.category_name }}</th> -->
+              <th scope="row">{{ inventory.name }}</th> 
+              <!-- <th scope="row">{{ inventory.image.url }}</th> -->
+              <!-- {% thumbnail inventory.image "200" as im %} -->
+              <!-- <th scope="row"><img src="{{ im.url }}"></th> -->
+              <!-- {% endthumbnail %} -->
+              <!-- <th scope="row">{{ inventory.images }}</th> -->
+              <th scope="row">UGX{{ inventory.cost_per_item }}</th>  
+              <th scope="row">{{ inventory.stock_date }}</th>
+              <th scope="row">UGX{{ inventory.last_sales_date }}</th> 
+              <th><a href="">
+                    <i class="fa-solid fa-cart-shopping fa-lg" style="color: #010204;" class="tooltiptext"></i></a>&nbsp
+                  <a href="{% url 'update_inventory' inventory.id %}">
+                    <i class="fa-solid fa-pencil fa-lg" style="color: #000000;" class="tooltiptext"></i></a> &nbsp
+                  <a href="{% url 'delete_inventory' inventory.id %}">
+                    <i class="fa-solid fa-trash fa-lg" style="color: #a84300;" class="tooltiptext"></i></a>&nbsp
+              </th>
+            </tr>
+          </tbody>
+          {% endfor %}
+        </table>
+  </div>
+</div>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">Log In</a> &ensp;
+  <a href="{% url 'register' %}">Register here</a>    
+{% endif %}
+
+{% endblock %}

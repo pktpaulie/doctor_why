@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+{% load thumbnail %}
+
+{% if user.is_authenticated %}
+
+<!-- Displaying flash messages for a logged in user -->
+<br>
+<div class="container">
+  <div class="justify-content-center">
+    {% if user.is_authenticated %}
+      {% with messages='Successfully Logged in' %}
+        {% if messages %}
+          <div id="flash_message" class="messages">{{ messages }}
+            <!-- <p class="messages">{{ messages }}</p> -->
+            <button class="btn btn-outline-success btn-sm" id="msg_close_btn" onclick="hide('flash_message')">Close</button>
+          </div>
+        {% endif %}
+      {% endwith %}
+    {% endif %}
+
+  </div>
+</div>
+
+
+<div class = "container">
+  <h1 class= "text-center">INVENTORY LIST</h1>
+  <br>
+  <div class = "container container-fluid ">
+    <a class="btn btn-secondary btn-sm" style="float: right;" href="{% url 'inventory' %}">List View</a>
+    <form action = "" method = "GET" class="form">
+      {{ inventory_filters.form }}
+      <input 
+      type = "submit"
+      value = "Search Products"
+      class="btn btn-secondary btn-sm"/>
+    </form>
+    
+  </div>   
+  <br><br>
+  <div class="container container fluid text-center" >
+      <!-- <a class="btn btn-secondary btn-sm" href="{% url 'inventory' %}">List View</a> -->
+  </div>
+  <br><br>
+  
+  <!-- <div class="content-section"> -->
+  <div class="container" >
+    <div class="row">
+      {% for inventory in inventories %}
+      <div class="col-md-4">
+        <div class="card m-4 product-card">
+          <div class="card-body">
+              <!-- <h6 class="cart-title text-center">{{ inventory.name }}</h5> -->
+              <h6 class="text-center"><strong>{{ inventory.name }}</strong></h5>
+              <h6 class="text-center">Stock:{{ inventory.quantity_in_stock }} UGX:{{ inventory.cost_per_item }}</h6>
+              
+              <div class="text-center">
+                  <!-- <span><i class="fab fa-product-hunt"></i></span> -->
+                  
+              </div>
+              <div class="container-fluid text-center justify-content-center">
+                {% thumbnail inventory.images "200x100" as im %}
+                <img src="{{ im.url }}">
+                {% endthumbnail %}
+              </div><br>
+              
+
+              <!-- <img class="thumbnail" src="{{ inventory.image_url }}"> -->
+              <div class="text-center">
+                <a class="btn btn-outline-success btn-sm" href="{% url 'inventory' %}">Order</a>
+                <a class="btn btn-outline-success btn-sm" href="{% url 'per_product' inventory.id %}">View</a>
+                <a class="btn btn-outline-success btn-sm" href="{% url 'update_inventory' inventory.id %}">Update</a>
+                <a class="btn btn-outline-danger btn-sm" href="{% url 'delete_inventory' inventory.id %}">Delete</a>
+                <!-- <a href=""> 
+                  <i class="fa-solid fa-cart-shopping fa-lg" style="color: #010204;" class="tooltiptext"></i></a>&nbsp
+                <a href="{% url 'update_inventory' inventory.id %}">
+                  <i class="fa-solid fa-pencil fa-lg" style="color: #000000;" class="tooltiptext"></i></a> &nbsp
+                <a href="{% url 'delete_inventory' inventory.id %}">
+                  <i class="fa-solid fa-trash fa-lg" style="color: #a84300;" class="tooltiptext"></i>
+                </a> -->
+              </div>
+              
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="col-md-4">
+        <div class="card mb-4"> 
+        </div>
+      </div>-->     
+      {% endfor %}
+    </div>
+    <!-- <div class="row mx-auto justify-content-center">
+        <a class="btn btn-outline-success btn-sm" href="">ADD TO CART</a>
+        <a class="btn btn-danger btn-sm" href="">REMOVE</a>
+    </div> -->
+  </div>
+</div>
+
+
+
+{% else %}
+      <p>You are not logged in</p>
+      <a href="{% url 'login' %}">Log In</a> &ensp;
+      <a href="{% url 'register' %}">Register here</a>    
+{% endif %}
+
+{% endblock %}

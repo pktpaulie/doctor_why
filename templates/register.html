@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+<br> <br>
+<div id="content" class="d-flex justify-content-center">
+    <div class = "body container-fluid container login">
+        <div class="row justify-content-center">
+    
+            <div class="col-lg-6 col-md-6 col-xs-6">
+                <div class="container container-fluid">
+                
+                    <h1 class = "text-white text-center" style="background-color: black;">
+                        <img src="/static/images/logo3.png" width="140" height="70" alt="WuHaYu">REGISTER
+                    </h1> 
+                </div>
+                
+            </div>
+        <!-- </div> -->
+
+        <!-- <div class="content-section1" > -->
+            <div class="container container-fluid">
+                <form action="{% url 'registration' %}" id="reg_form" method="POST" enctype="multipart/form-data">    
+                    {% csrf_token %}
+                        <!-- all data captured in a from input fields can be accessed in views
+                        using the name field here -->  
+                    <div class="form-group">
+                        <label for="username">Username</label>            
+                        <input placeholder="Username" class="form-control" name="username" type="text" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input placeholder="Email" class="form-control" name="user_email" type="email" required>
+                        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                    </div>
+                    <div class="form-group">
+                        <!-- all data captured in a from input fields can be accessed in views
+                        using the name field here -->
+                        <label for="gender">Gender</label>
+                        <select name="gender" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input placeholder="Password" class="form-control" name="password" type="password" required>
+                    <div class="form-group">
+                        <label for="confirm password">Confirm Password</label>
+                        <input placeholder="Confirm Password" class="form-control" required="confirm password" type="password">  
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" name="Register" id="signupbtn" class="btn btn-info btn-dark" type="button">
+                        <!-- <input type="submit" title="Sign Up" id="signupbtn">                -->
+                    </div>
+                    <small class="form-text text-center">
+                        Already have an account?              
+                        <a href="{% url 'login' %}" style="color: black">Log In</a> 
+                    </small>
+                     
+                </form>            
+            </div>
+        </div>
+        <div class="container-fluid">
+            <small style="color: orange;">
+                ...               
+                <br><br>  
+            </small>
+        </div>
+        <div class="container container-fluid top">
+            <h1 class = "text-black text-center" style = "color: #e88915dd ">.</h1>
+        </div>
+    </div>
+</div>   
+   
+
+
+       
+{% endblock %}
