@@ -25,7 +25,7 @@ body{
  /* .form-group */
 form {
     width: 45%;
-    float: right;
+    /* float: right; */
     margin: 0 auto;
     background: #f3f7f7;
     padding: 0.3rem 0.3rem; 
@@ -61,7 +61,7 @@ p.copyright {
     border-color: rgb(144, 142, 142);
 }
 .content-section{
-    background: #f3f7f7;
+    background: #fdfbfb;
     border-radius: 10px;
     opacity: 0.8;
     margin: 40px;
@@ -91,14 +91,6 @@ footer {
     font-size: 0.7em;
     
 }
-/* footer {
-    position: relative;
-    height: 100px;
-    width: 100%; 
-    bottom: 0;
-    margin: 0;
-    padding: 0;
-} */
 
 #footer_text p{
     text-align: center;
@@ -176,6 +168,13 @@ a:hover{
     border-radius: 10px;
     
 }
+
+.alert-red {
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    color: #a94442;
+}
+
 
 #usr_welcome{
     text-align: left;

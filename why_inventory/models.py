@@ -1,5 +1,6 @@
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.contrib.auth.models import User
 from sorl.thumbnail import ImageField
 
 # User is used by Django, so we have to find another name for the class
@@ -10,6 +11,7 @@ class UserAccount(models.Model):
     email = models.CharField(max_length=255, blank=True)
     password = models.CharField(max_length=22)
     signup_time = models.DateTimeField(auto_now=True)
+
 
 
 class Promotion(models.Model):
@@ -38,14 +40,16 @@ class Category(models.Model):
         ordering = ['title']
 
 class Inventory(models.Model):
-    name = models.CharField(max_length=100)
-    cost_per_item = models.PositiveIntegerField(null=False, blank=False)
-    quantity_in_stock = models.IntegerField(validators=[MinValueValidator(0)])
-    quantity_sold = models.IntegerField(null=False, blank=False, validators=[MinValueValidator(0)])
+    name = models.CharField(max_length=100, null=True, blank=True)
+    cost_per_item = models.PositiveIntegerField(default=0, null=True, blank=True)
+    #quantity_in_stock = models.IntegerField(validators=[MinValueValidator(0)])
+    quantity_in_stock = models.IntegerField(default=0, null=True, blank=True, validators=[MinValueValidator(0)])
+    quantity_sold = models.IntegerField(default=0, null=False, blank=False)
     received_quantity = models.PositiveIntegerField(default = 0, null = True, blank = True)
-    sales = models.PositiveIntegerField(null=False, blank=False)
-    category = models.ForeignKey(Category, on_delete=models.PROTECT)
+    sales = models.IntegerField(default=0, null=False, blank=False)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, null=True, blank=True)
     description = models.CharField(max_length=255, null=True, blank=True)
+    minimum_stock_level = models.IntegerField(default=0, null=False, blank=True)
     stock_date = models.DateField(auto_now_add=True)
     last_sales_date = models.DateField(auto_now=True)
     images = models.ImageField(null=True, blank=True)
@@ -66,10 +70,14 @@ class Inventory(models.Model):
         return url
         # if self.images and hasattr(self.images, 'url'):
         #     return self.images.url
+    
+    def inventory_status(self):
+        if self.quantity_in_stock < self.minimum_stock_level:
+            return 'Low'
+        return 'OK'
 
 # class UploadImage
 #     images = models.ImageField(upload_to='images')
-
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
@@ -107,9 +115,40 @@ class Sale(models.Model):
     
     def __str__(self):
         return self.sold_item.name
-    
+  
+class UserProfile(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=100, null=True)
+    email = models.EmailField(max_length=200, null=True)
+
+    def __str__(self):
+        return self.name
 
 class Customer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    #user = models.OneToOneField(User,on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=100, null=True)
+    email = models.EmailField(max_length=200, null=True)
+
+    def __str__(self):
+        return self.name
+
+class Order(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
+    placed_at = models.DateTimeField(auto_now_add=True)
+    complete = models.BooleanField(default=False)
+    transaction_id = models.CharField(max_length=100, null=True)
+
+    
+    
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+    product = models.ForeignKey(Inventory, on_delete=models.SET_NULL, blank=True, null=True)
+    quantity = models.IntegerField(default=0, null=True, blank=True)
+    date_added = models.DateTimeField(auto_now_add=True, null=True)
+
+    
+""" class Customer(models.Model):
     MEMBERSHIP_BRONZE = 'B'
     MEMBERSHIP_SILVER = 'S'
     MEMBERSHIP_GOLD = 'G'
@@ -161,18 +200,41 @@ class Address(models.Model):
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     customer = models.ForeignKey(
-        Customer, on_delete=models.CASCADE)
+        Customer, on_delete=models.CASCADE) """
 
 
 class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    """ item = models.ManyToManyField(Inventory)
+    quantity = models.PositiveIntegerField(default=1, null=True)
+    complete = models.BooleanField(default=False) """
+    complete = models.BooleanField(default=False)
+    transaction_id = models.CharField(max_length=100, null=True)
+
+    @property
+    def get_cart_total(self):
+        cartitems = self.cartitem_set.all()
+        total = sum([item.get_total for item in cartitems])
+        return total
+    
+    @property
+    def get_cart_items(self):
+        cartitems = self.cartitem_set.all()
+        total = sum([item.quantity for item in cartitems])
+
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveSmallIntegerField()
+    item = models.ManyToManyField(Inventory)
+    quantity = models.PositiveIntegerField(default=1, null=True)
+    complete = models.BooleanField(default=False)
+    cart = models.ForeignKey(Cart, on_delete=models.SET_NULL, null=True)
 
+    @property
+    def get_cart_total(self):
+        total = self.item.price * self.quantity
+        return total
 
 class Wallet(models.Model):
     balance = models.IntegerField(validators=[MinValueValidator(0)])

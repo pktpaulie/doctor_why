@@ -21,6 +21,6 @@ class AddInventoryForm(ModelForm):
 class UpdateInventoryForm(ModelForm):
     class Meta:
         model = Inventory
-        fields = ['cost_per_item', 'quantity_in_stock', 'received_quantity']
+        fields = ['cost_per_item', 'received_quantity']
         autocomplete_fields = ['name']
         

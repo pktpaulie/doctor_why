@@ -4,10 +4,14 @@ from django.db.models.query import QuerySet
 from django.utils.html import format_html, urlencode
 from django.urls import reverse
 from . import models
+#from .models import *
 
 
 admin.site.register(models.Inventory)
 admin.site.register(models.Category)
+admin.site.register(models.Order)
+admin.site.register(models.OrderItem)
+admin.site.register(models.Cart)
 
 class InventoryFilter(admin.SimpleListFilter):
     title = 'inventory'
@@ -65,26 +69,26 @@ class CollectionAdmin(admin.ModelAdmin):
 
 
 
-@admin.register(models.Customer)
+""" @admin.register(models.Customer)
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ['first_name', 'last_name',  'membership']
-    list_editable = ['membership']
+    #list_editable = ['membership']
     list_per_page = 10
     ordering = ['first_name', 'last_name']
-    search_fields = ['first_name__istartswith', 'last_name__istartswith']
+    search_fields = ['first_name__istartswith', 'last_name__istartswith'] """
 
 
 
-class OrderItemInline(admin.TabularInline):
+""" class OrderItemInline(admin.TabularInline):
     # autocomplete_fields = ['product']
     min_num = 1
     max_num = 10
     model = models.OrderItem
-    extra = 0
+    extra = 0 """
 
-
+""" 
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
     autocomplete_fields = ['customer']
     inlines = [OrderItemInline]
-    list_display = ['id', 'placed_at', 'customer']
+    list_display = ['id', 'placed_at', 'customer'] """

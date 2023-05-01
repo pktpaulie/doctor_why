@@ -27,7 +27,7 @@
 <div class = "container">
   <h1 class= "text-center">INVENTORY LIST</h1>
   <br>
-  <div class = "container container-fluid ">
+  <div class = "container container-fluid justify-content-center">
     <a class="btn btn-secondary btn-sm" style="float: right;" href="{% url 'inventory' %}">List View</a>
     <form action = "" method = "GET" class="form">
       {{ inventory_filters.form }}
@@ -42,14 +42,14 @@
   <div class="container container fluid text-center" >
       <!-- <a class="btn btn-secondary btn-sm" href="{% url 'inventory' %}">List View</a> -->
   </div>
-  <br><br>
+  
   
   <!-- <div class="content-section"> -->
   <div class="container" >
     <div class="row">
       {% for inventory in inventories %}
-      <div class="col-md-4">
-        <div class="card m-4 product-card">
+      <div class="col-lg-3 col-md-6 col-xs-12">
+        <div class="card m-1 product-card">
           <div class="card-body">
               <!-- <h6 class="cart-title text-center">{{ inventory.name }}</h5> -->
               <h6 class="text-center"><strong>{{ inventory.name }}</strong></h5>
@@ -59,7 +59,8 @@
                   <!-- <span><i class="fab fa-product-hunt"></i></span> -->
                   
               </div>
-              <div class="container-fluid text-center justify-content-center">
+              <div class="container-fluid text-center justify-content-center"
+                style="cursor: pointer; cursor: hand;" onclick="window.location = `{% url 'per_product' inventory.id %}`">
                 {% thumbnail inventory.images "200x100" as im %}
                 <img src="{{ im.url }}">
                 {% endthumbnail %}
@@ -68,8 +69,8 @@
 
               <!-- <img class="thumbnail" src="{{ inventory.image_url }}"> -->
               <div class="text-center">
-                <a class="btn btn-outline-success btn-sm" href="{% url 'inventory' %}">Order</a>
-                <a class="btn btn-outline-success btn-sm" href="{% url 'per_product' inventory.id %}">View</a>
+                <a class="btn btn-outline-success btn-sm" href="{% url 'add_to_cart' inventory.id %}">Order</a>
+                <!-- <a class="btn btn-outline-success btn-sm" href="{% url 'per_product' inventory.id %}">View</a> -->
                 <a class="btn btn-outline-success btn-sm" href="{% url 'update_inventory' inventory.id %}">Update</a>
                 <a class="btn btn-outline-danger btn-sm" href="{% url 'delete_inventory' inventory.id %}">Delete</a>
                 <!-- <a href=""> 

@@ -1,8 +1,10 @@
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required  
 from .forms import InputForm, AddInventoryForm, UpdateInventoryForm
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
-from .models import UserAccount, Inventory, Sale, Order
+from .models import *
 from .filters import Inventory_Filter
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -78,9 +80,15 @@ def inventory_list(request):
     inventories = Inventory.objects.all().order_by('-id')
     inventory_filters = Inventory_Filter(request.GET, queryset = inventories)
     inventories = inventory_filters.qs
+    status = [items.inventory_status() for items in inventories]
+    if status is 'Low':
+        messages.warning(request, 'Low Stock!', extra_tags='red')
+
+
     context = {
         'inventories': inventories,
         'inventory_filters': inventory_filters,
+        'status': status,
     }
     return render(request, "inventory/inventory_list.html", {'inventories': inventories,
         'inventory_filters': inventory_filters})
@@ -114,20 +122,27 @@ def delete_inventory(request, pk):
     return redirect('/')
 
 def update_inventory(request, pk):
-    inventory = get_object_or_404(Inventory, pk=pk)
+    #inventory = get_object_or_404(Inventory, pk=pk)
+    inventory = Inventory.objects.get(id = pk)
     if request.method == 'POST':
-        updateForm = UpdateInventoryForm()
+        updateForm = UpdateInventoryForm(data=request.POST)
         if updateForm.is_valid():
-            inventory.name = updateForm.data['name']
-            inventory.cost_per_item = updateForm.data['cost_per_item']
-            inventory.quantity_in_stock = updateForm.data['quantity_in_stock']
-            inventory.quantity_sold = updateForm.data['quantit_sold']
-            inventory.received_quantity = updateForm.data['received_quantity']
-            inventory.sales = int(inventory.cost_per_item) * int(inventory.quantity_sold)
+            #inventory.name = updateForm.data.get('name')
+            new_cost_per_item = int(updateForm.data['cost_per_item'])
+            #inventory.quantity_in_stock = int(updateForm.data['quantity_in_stock'])
+            #inventory.quantity_sold = updateForm.data.get('quantity_sold')
+            inventory.received_quantity = int(updateForm.data['received_quantity'])
+            #if inventory.quantity_sold is not None:
+            #    inventory.sales += (inventory.cost_per_item) * int(inventory.quantity_sold)
+            #inventory.save()
+            if inventory.received_quantity > 0:
+                inventory.quantity_in_stock += inventory.received_quantity
+            inventory.cost_per_item = new_cost_per_item
             inventory.save()
-            return redirect('/')
+            return redirect(f"/product/{pk}")
+            #return render(request, 'inventory/per_product.html')
     else:
-        updateForm = UpdateInventoryForm()
+        updateForm = UpdateInventoryForm(instance=inventory)
     context = {
         'form': updateForm
         }
@@ -153,18 +168,64 @@ def sales_records(request):
                   'balance': balance,
                   'net': net})
 
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Customer.objects.create(user=instance)
+
 def cart(request):
-        if request.user.is_authenticated:
-            customer = request.user.customer
-            order, created = Order.objects.get_or_created(customer=customer, complete=Fales)
+    if request.user.is_authenticated:
+        #customer = request.user.customer
+        #order, created = Order.objects.get_or_create(customer=customer, complete=False)
+        order, created = Order.objects.get_or_create(complete=False)
+        items = order.orderitem_set.all()
+    else:
+        items = []
 
-        context = {
+    context = {
+        'items': items
+    }
+    return render(request, 'store/cart.html', context)
 
-        }
-        return render(request, 'store/cart.html', context)
-    
+@login_required
+def add_to_cart(request, pk):
+    product = get_object_or_404(Inventory, pk=pk)
+    if request.user.is_authenticated:
+        cart, created = Cart.objects.get_or_create(user=request.user)
+        cart.items.add(product)
+        cart.save()
+        messages.success(request, f"{product.name} was added to your cart!")
+    else:
+        
+        messages.warning(request, "You must be logged in to add items to your cart.")
+        #return redirect('index', inventory_id=product.id)
+    return redirect('per_product', pk=pk)
+
+@login_required
+def view_cart(request):
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    items = cart.cartitem_set.all()
+    #items = cart.cartitem.all()
+    #cart, created = Order.objects.get_or_create(user=request.user)
+    #items = order.orderitem_set.all()
+    context = {
+        'cart': cart,
+        'items': items
+    }
+    return render(request, 'store/view_cart.html', context=context)
+
+@login_required
+def remove_from_cart(request, inventory_id):
+    product = get_object_or_404(Inventory, id=inventory_id)
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    cart.item.remove(product)
+    cart.save()
+    messages.success(request, f"{product.name} was removed from your cart.")
+    return redirect('view_cart')
+
+
 def checkout(request):
-        context = {
+    context = {
 
-        }
-        return render(request, 'store/checkout.html', context)
+    }
+    return render(request, 'store/checkout.html', context)

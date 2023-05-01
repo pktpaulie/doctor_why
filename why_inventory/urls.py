@@ -1,7 +1,7 @@
 from django.urls import path
 from why_inventory import views 
 from django.contrib.auth import views as auth_views
-from .views import per_product_view
+from .views import per_product_view, view_cart
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -21,7 +21,10 @@ urlpatterns = [
     path('add_inventory', views.add_product, name='add_inventory'),
     path('update/<int:pk>', views.update_inventory, name='update_inventory'),
     path('cart/', views.cart, name='store/cart'),
-    path('checkout/', views.checkout, name='store/checkout/'),
+    path('cart/<int:pk>', views.add_to_cart, name='add_to_cart'),
+    path('view_cart/', views.view_cart, name='view_cart'),
+    path('cart/<int:id>', views.remove_from_cart, name='remove_from_cart'),
+    path('checkout/', views.checkout, name='checkout'),
     path('sales_records/', views.sales_records, name='sales_records'),
 
     path('delete/<int:pk>',views.delete_inventory, name='delete_inventory'),

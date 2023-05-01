@@ -60,19 +60,17 @@
             <a class="nav-link" href="{% url 'add_inventory' %}">ADD STOCK</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'sales_records' %}">ORDERS</a>
+            <a class="nav-link" href="{% url 'sales_records' %}">SALES</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'home' %}">MY ACCOUNT</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout'%}">LOGOUT</a>
+            <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>
           </li>
         </ul>
         <ul class="navbar-nav ml-auto">
           <div class="form-inline my-2 my-lg-0">
-                      
-            <a href="{% url 'store/cart' %}">
+            <!-- <a href="{% url 'store/cart' %}"></a> -->
+            <!-- View cart link -->
+            <a href="{% url 'view_cart' %}"> 
               <i class="fa-solid fa-cart-plus fa-lg"></i>
              <!-- <img  id="cart-icon" src="{% static 'images/cart.png' %}"> -->
            </a>
