@@ -81,7 +81,7 @@ def inventory_list(request):
     inventory_filters = Inventory_Filter(request.GET, queryset = inventories)
     inventories = inventory_filters.qs
     status = [items.inventory_status() for items in inventories]
-    if status is 'Low':
+    if status == 'Low':
         messages.warning(request, 'Low Stock!', extra_tags='red')
 
 
@@ -135,18 +135,18 @@ def update_inventory(request, pk):
             #if inventory.quantity_sold is not None:
             #    inventory.sales += (inventory.cost_per_item) * int(inventory.quantity_sold)
             #inventory.save()
-            if inventory.received_quantity > 0:
-                inventory.quantity_in_stock += inventory.received_quantity
+            inventory.quantity_in_stock += inventory.received_quantity
             inventory.cost_per_item = new_cost_per_item
             inventory.save()
-            return redirect(f"/product/{pk}")
+            return redirect('index')
+            #return redirect(f"/product/{pk}")
             #return render(request, 'inventory/per_product.html')
     else:
         updateForm = UpdateInventoryForm(instance=inventory)
     context = {
         'form': updateForm
         }
-    return render(request, 'inventory/inventory_update.html', context=context)
+    return render(request, 'inventory/inventory_update.html', {'form': updateForm})
     
 
     # def store(request):
@@ -192,22 +192,20 @@ def add_to_cart(request, pk):
     product = get_object_or_404(Inventory, pk=pk)
     if request.user.is_authenticated:
         cart, created = Cart.objects.get_or_create(user=request.user)
-        cart.items.add(product)
+        cart.product.add(product)
         cart.save()
         messages.success(request, f"{product.name} was added to your cart!")
     else:
         
         messages.warning(request, "You must be logged in to add items to your cart.")
         #return redirect('index', inventory_id=product.id)
-    return redirect('per_product', pk=pk)
+    return redirect('view_cart')
+    #return render(request, 'store/view_cart.html')
 
 @login_required
 def view_cart(request):
-    cart, created = Cart.objects.get_or_create(user=request.user)
-    items = cart.cartitem_set.all()
-    #items = cart.cartitem.all()
-    #cart, created = Order.objects.get_or_create(user=request.user)
-    #items = order.orderitem_set.all()
+    cart, created = Cart.objects.get_or_create(user=request.user, complete=False)
+    items = cart.product.all()
     context = {
         'cart': cart,
         'items': items
@@ -218,7 +216,7 @@ def view_cart(request):
 def remove_from_cart(request, inventory_id):
     product = get_object_or_404(Inventory, id=inventory_id)
     cart, created = Cart.objects.get_or_create(user=request.user)
-    cart.item.remove(product)
+    cart.product.remove(product)
     cart.save()
     messages.success(request, f"{product.name} was removed from your cart.")
     return redirect('view_cart')

@@ -175,6 +175,20 @@ a:hover{
     color: #a94442;
 }
 
+.flash {
+    animation: flash 1s linear infinite;
+    color: #a94442;
+}
+
+@keyframes flash {
+    50% {
+        opacity: 0;
+    }
+}
+#alert-red {
+    border-color: #ebccd1;
+    color: #a94442;
+}
 
 #usr_welcome{
     text-align: left;

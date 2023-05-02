@@ -62,16 +62,22 @@
               <div class="container-fluid text-center justify-content-center"
                 style="cursor: pointer; cursor: hand;" onclick="window.location = `{% url 'per_product' inventory.id %}`">
                 {% thumbnail inventory.images "200x100" as im %}
-                <img src="{{ im.url }}">
+                  <p class="{% if inventory.get_low_stock %}flash{% endif %}"><img src="{{ im.url }}"></p>
                 {% endthumbnail %}
               </div><br>
+              <div class="text-center">
+                {% if inventory.get_low_stock %}<p class="flash">Restock
+                </p>
+                {% endif %}
+              </div> 
               
 
               <!-- <img class="thumbnail" src="{{ inventory.image_url }}"> -->
               <div class="text-center">
                 <a class="btn btn-outline-success btn-sm" href="{% url 'add_to_cart' inventory.id %}">Order</a>
                 <!-- <a class="btn btn-outline-success btn-sm" href="{% url 'per_product' inventory.id %}">View</a> -->
-                <a class="btn btn-outline-success btn-sm" href="{% url 'update_inventory' inventory.id %}">Update</a>
+                <a class="btn btn-outline-success btn-sm" href="{% url 'update_inventory' inventory.id %}">
+                  <span class="{% if inventory.get_low_stock %}flash{% endif %}">Update</span></a>
                 <a class="btn btn-outline-danger btn-sm" href="{% url 'delete_inventory' inventory.id %}">Delete</a>
                 <!-- <a href=""> 
                   <i class="fa-solid fa-cart-shopping fa-lg" style="color: #010204;" class="tooltiptext"></i></a>&nbsp

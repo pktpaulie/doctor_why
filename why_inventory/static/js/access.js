@@ -40,3 +40,13 @@ function hide(target){
   var target = document.getElementById(target);
   target.setAttribute("style", "display:none;");
 }
+
+
+
+window.setTimeout(function() {
+    var element = document.querySelector('.flash');
+    if (element) {
+        element.classList.remove('flash');
+    }
+}, 5000);
+
