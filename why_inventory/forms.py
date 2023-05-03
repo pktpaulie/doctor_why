@@ -23,4 +23,14 @@ class UpdateInventoryForm(ModelForm):
         model = Inventory
         fields = ['cost_per_item', 'received_quantity']
         autocomplete_fields = ['name']
-        
+    
+# modeling a form that we shall use to register a sale for a product
+class SalesForm(ModelForm):
+    class Meta:
+        model = Cart
+        fields = ['customer_name', 'paid_amount']
+
+class DispenseForm(ModelForm):
+    class Meta:
+        model = Cart
+        fields = ['customer_name', 'paid_amount']

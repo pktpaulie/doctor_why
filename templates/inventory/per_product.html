@@ -11,7 +11,7 @@
     <!-- <div class="content-section"> -->
         <div class="row mx-auto justify-content-center">
             
-            <div class="card m-4" style="width: 18rem;">
+            <div class="card m-2" >
                 <div class="card-body">
                     <h5 class="cart-title text-center">Product</h5>
                     <div style="font-size: 30px;" class="text-center">
@@ -28,7 +28,7 @@
                     </div> -->
                 </div>
             </div>
-            <div class="card m-4" style="width: 18rem;">
+            <div class="card m-2" >
                 <div class="card-body">
                     <h5 class="cart-title text-center">Description</h5>
                     <!-- <div style="font-size: 30px;" class="text-center">
@@ -37,7 +37,7 @@
                     <h7 class="text-center">{{ inventory.description }}</h7>
                 </div>
             </div>
-            <div class="card m-4" style="width: 18rem;">
+            <div class="card m-2">
                 <div class="card-body">
                     <h5 class="cart-title text-center">Quantity in Stock</h5>
                     <div style="font-size: 30px;", class="text-center">
@@ -46,7 +46,7 @@
                     <h3 class="text-center">{{ inventory.quantity_in_stock }}</h3>
                 </div>
             </div>
-            <div class="card m-4" style="width: 18rem;">
+            <div class="card m-2">
                 <div class="card-body">
                     <h5 class="cart-title text-center">Quantity Sold</h5>
                     <div style="font-size: 30px;", class="text-center">
@@ -56,7 +56,7 @@
                     <h3 class="text-center">{{ inventory.quantity_sold }}</h3>
                 </div>
             </div>
-            <div class="card m-4" style="width: 18rem;">
+            <div class="card m-2" >
                 <div class="card-body">
                     <h5 class="cart-title text-center">Price per {{inventory.name }}</h5>
                     <div style="font-size: 30px;", class="text-center">
@@ -65,16 +65,16 @@
                     <h3 class="text-center">{{ inventory.cost_per_item }}</h3>
                 </div>
             </div>
-            <div class="card m-4" style="width: 18rem;">
+            <div class="card m-2" >
                 <div class="card-body">
                     <h5 class="cart-title text-center">Sales</h5>
                     <div style="font-size: 30px;", class="text-center">
                         <span><i class="fa-solid fa-chart-line"></i></span>
                     </div>
-                    <h3 class="text-center">{{ inventory.sales }}</h3>
+                    <h3 class="text-center">{{ inventory.get_sales }}</h3>
                 </div>
             </div>
-            <div class="card m-4" style="width: 18rem;">
+            <div class="card m-2" >
                 <div class="card-body">
                     <h5 class="cart-title text-center">Stock Date</h5>
                     <div style="font-size: 30px;", class="text-center">
@@ -83,7 +83,7 @@
                     <h3 class="text-center">{{ inventory.stock_date }}</h3>
                 </div>
             </div>
-            <div class="card m-4" style="width: 18rem;">
+            <div class="card m-2" >
                 <div class="card-body">
                     <h5 class="cart-title text-center">Last Sales Date</h5>
                     <div style="font-size: 30px;", class="text-center">

@@ -93,7 +93,24 @@
   </nav>  
   
 
+  <div class="container">
+    <div class="justify-content-center">
+      {% if user.is_authenticated %}
+        
+        {% if messages %}
+          {% for message in messages %}
+            <div id="flash_message" class="alert alert-{{ messages.tags }}">
+              <!-- <p class="messages">{{ messages }}</p> -->
+              {{ message }}
+              <button class="btn btn-outline-success btn-sm" id="msg_close_btn" onclick="hide('flash_message')">Close</button>
+            </div>
+          {% endfor %}
+        {% endif %}
+        
+      {% endif %}
   
+    </div>
+  </div>
      
   {% block content %}
   {% endblock %}

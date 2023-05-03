@@ -1,31 +1,3 @@
-// Assign all elements
-const demoId = document.getElementById('demo');
-const demoClass = document.getElementsByClassName('demo');
-const demoTag = document.getElementsByTagName('article');
-const demoQuery = document.querySelector('#demo-query');
-const demoQueryAll = document.querySelectorAll('.demo-query-all');
-
-// Change border of ID demo to purple
-demoId.style.border = '1px solid purple';
-
-// Change border of class demo to orange
-for (i = 0; i < demoClass.length; i++) {
-  demoClass[i].style.border = '1px solid orange';
-}
-
-// Change border of tag demo to blue
-for (i = 0; i < demoTag.length; i++) {
-  demoTag[i].style.border = '1px solid blue';
-}
-
-// Change border of ID demo-query to red
-demoQuery.style.border = '1px solid red';
-
-// Change border of class query-all to green
-demoQueryAll.forEach(query => {
-  query.style.border = '1px solid green';
-});
-
 class MyFooter extends HTMLElement {
   connectedCallback(){
     this.innerHTML = `
@@ -50,3 +22,63 @@ window.setTimeout(function() {
     }
 }, 5000);
 
+var updateBtns = document.getElementsByClassName('update-cart')
+
+for(var i=0; i<updateBtns.length; i++){
+  updateBtns[i].addEventListener('click', function(){
+    var productId = this.dataset.product
+    var action = this.dataset.action
+    console.log('USER:', user)
+    if(user === 'AnonymouseUser'){
+      console.log('Not logged in')
+    }else{
+      updateUserOrder(productId, action)
+    }
+  })
+}
+
+function updateUserOrder(productId, action){
+	console.log('User is authenticated, sending data...')
+
+		var url = '/update_item/'
+
+		fetch(url, {
+			method:'POST',
+			headers:{
+				'Content-Type':'application/json',
+			}, 
+			body:JSON.stringify({'itemId':itemId, 'action':action})
+		})
+		.then((response) => {
+		   return response.json();
+		})
+		.then((data) => {
+		    console.log('Data:', data)
+		});
+}
+
+function addCookieItem(productId, action){
+	console.log('User is not authenticated')
+
+	if (action == 'add'){
+		if (cart[productId] == undefined){
+		cart[productId] = {'quantity':1}
+
+		}else{
+			cart[productId]['quantity'] += 1
+		}
+	}
+
+	if (action == 'remove'){
+		cart[productId]['quantity'] -= 1
+
+		if (cart[productId]['quantity'] <= 0){
+			console.log('Item should be deleted')
+			delete cart[productId];
+		}
+	}
+	console.log('CART:', cart)
+	document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+	
+	location.reload()
+}

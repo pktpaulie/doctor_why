@@ -10,34 +10,37 @@
 
 
 
-<div id="content" class="d-flex justify-content-center content-section">
-    <div class = "body container container-fluid login">
-        <div class="row justify-content-center">
-            <div class="col-lg-6 col-md-6 col-xs-6">
-                <div class="container container-fluid">
-                    <h1 class = "text-white text-center" style="background-color: black;">
-                        <img src="/static/images/logo3.png" width="140" height="70" alt="WuHaYu">LOGIN
-                    </h1> 
-                </div>
-            </div>
-        </div>
+<div class="container container-fluid justify-content-center">
         <!-- <div class="content-section" >  -->
         <div class="container container-fluid" id="reg_form">
-            {% include 'messages.html' %}
             <form id="form" method="POST">
-                {% csrf_token %}
-                {{ form.as_p }}                    
-                <input type="submit" name="Submit" class="btn btn-info btn-dark" type="button">
+                <div class="container-fluid justify-content-center" id="login">
+                    <h1 >
+                        <img src="/static/images/logo3.png" width="140" height="70" alt="WuHaYu">LOGIN
+                    </h1>                    
+                </div>
+                <br>
+                <div>
+                    {% csrf_token %}
+                    {{form | crispy}}
+                    <!-- {{ form.as_p }} -->
+                </div>
+                <div>
+                    <input type="submit" name="Submit" id="login_btn" class="btn btn-info btn-dark btn-lg" type="button">
+                </div>                    
+                
+            
+                <div id="content" class="container container-fluid">
+                    <br>
+                    <small class="form-text text-center">
+                        Create an account              
+                        <a href="{% url 'register' %}" style="color: black">here</a>     
+                    </small> 
+                </div> 
             </form>
         </div>
-        <div id="content" class="container container-fluid">
-            <br>
-            <small class="form-text text-center">
-                Create an account              
-                <a href="{% url 'register' %}" style="color: black">here</a>     
-            </small> 
-        </div> 
-    </div>
+        
+    
 </div>
 
 

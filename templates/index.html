@@ -1,31 +1,44 @@
 {% extends "base.html" %}
-{% block content %}
+
 {% load static %}
 {% load thumbnail %}
 
+
+{% block content %}
 {% if user.is_authenticated %}
 
-<!-- Displaying flash messages for a logged in user -->
-<br>
-<div class="container">
-  <div class="justify-content-center">
-    {% if user.is_authenticated %}
-      {% with messages='Successfully Logged in' %}
-        {% if messages %}
-          <div id="flash_message" class="messages">{{ messages }}
-            <!-- <p class="messages">{{ messages }}</p> -->
-            <button class="btn btn-outline-success btn-sm" id="msg_close_btn" onclick="hide('flash_message')">Close</button>
-          </div>
-        {% endif %}
-      {% endwith %}
-    {% endif %}
-
+<div class = "container container-fluid justify-content-center">
+  <div class="col-md-12">
+    <div class="card-header bg-info text-white text-center">
+      <h5>Key Information</h5>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="card my-card shadow text-center">
+          <h4>Total Stock</h4>
+          <h5>{{ stock }}</h5>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card my-card shadow text-center">
+          <h4>Stock Status</h4>
+          <h5>{{ status }}</h5>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card my-card shadow text-center">
+          <h4>Total Stock</h4>
+          <h5>{{ stock }}</h5>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
 
+
 <div class = "container">
-  <h1 class= "text-center">INVENTORY LIST</h1>
+    <!-- <h1 class= "text-center">INVENTORY LIST</h1> -->
   <br>
   <div class = "container container-fluid justify-content-center">
     <a class="btn btn-secondary btn-sm" style="float: right;" href="{% url 'inventory' %}">List View</a>
@@ -37,13 +50,11 @@
       class="btn btn-secondary btn-sm"/>
     </form>
     
-  </div>   
+  </div> 
+
+</div>
+  
   <br><br>
-  <div class="container container fluid text-center" >
-      <!-- <a class="btn btn-secondary btn-sm" href="{% url 'inventory' %}">List View</a> -->
-  </div>
-  
-  
   <!-- <div class="content-section"> -->
   <div class="container" >
     <div class="row">
@@ -62,14 +73,17 @@
               <div class="container-fluid text-center justify-content-center"
                 style="cursor: pointer; cursor: hand;" onclick="window.location = `{% url 'per_product' inventory.id %}`">
                 {% thumbnail inventory.images "200x100" as im %}
-                  <p class="{% if inventory.get_low_stock %}flash{% endif %}"><img src="{{ im.url }}"></p>
+                  <img src="{{ im.url }}">
                 {% endthumbnail %}
-              </div><br>
-              <div class="text-center">
-                {% if inventory.get_low_stock %}<p class="flash">Restock
+                {% if inventory.get_low_stock %}<p class="flash text-center">Restock
                 </p>
+                {% else %}
+                  <br><br><br>
                 {% endif %}
-              </div> 
+              </div>
+              
+                
+              
               
 
               <!-- <img class="thumbnail" src="{{ inventory.image_url }}"> -->

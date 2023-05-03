@@ -41,7 +41,7 @@ class Category(models.Model):
 
 class Inventory(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)
-    cost_per_item = models.PositiveIntegerField(default=0, null=True, blank=True)
+    cost_per_item = models.PositiveIntegerField(default=1, null=True, blank=True)
     #quantity_in_stock = models.IntegerField(validators=[MinValueValidator(0)])
     quantity_in_stock = models.IntegerField(default=0, null=True, blank=True, validators=[MinValueValidator(0)])
     quantity_sold = models.IntegerField(default=0, null=False, blank=False)
@@ -50,8 +50,10 @@ class Inventory(models.Model):
     category = models.ForeignKey(Category, on_delete=models.PROTECT, null=True, blank=True)
     description = models.CharField(max_length=255, null=True, blank=True)
     minimum_stock_level = models.IntegerField(default=0, null=False, blank=True)
+    expiry_date = models.DateField(null=True, blank=True)
     stock_date = models.DateField(auto_now_add=True)
     last_sales_date = models.DateField(auto_now=True)
+    batch_number = models.CharField(max_length=100, null=True, blank=True)
     images = models.ImageField(null=True, blank=True)
     
     
@@ -71,6 +73,11 @@ class Inventory(models.Model):
         # if self.images and hasattr(self.images, 'url'):
         #     return self.images.url
     
+    @property
+    def get_sales(self):
+        sold = self.quantity_sold * self.cost_per_item
+        return sold
+
     def inventory_status(self):
         if self.quantity_in_stock <= self.minimum_stock_level:
             return 'Low'
@@ -108,6 +115,7 @@ class Sale(models.Model):
     paid_amount = models.IntegerField(default = 0, null = False, blank = True)
     customer_name = models.CharField(max_length=50, null=True, blank=True)
     sold_date = models.DateTimeField(auto_now_add=True)
+    # = models.ForeignKey(Cart')
 
     def get_bill(self):
         total_bill = self.sold_quantity * self.unit_price
@@ -139,12 +147,11 @@ class Customer(models.Model):
         return self.name
 
 class Order(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
+    # customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     placed_at = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False)
-    transaction_id = models.CharField(max_length=100, null=True)
-
-    
+    transaction_id = models.CharField(max_length=100, null=True) 
     
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
@@ -154,17 +161,26 @@ class OrderItem(models.Model):
 
 class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-    product = models.ForeignKey(Inventory, on_delete=models.SET_NULL, blank=True, null=True)
+    #product = models.ForeignKey(Inventory, on_delete=models.CASCADE, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    # product = models.ManyToManyField(Inventory)
+    product = models.ManyToManyField(Inventory)
     quantity = models.PositiveIntegerField(default=1, null=True)
     complete = models.BooleanField(default=False)
     transaction_id = models.CharField(max_length=100, null=True)
+    paid_amount = models.IntegerField(default = 0, null = False, blank = True)
+    customer_name = models.CharField(max_length=50, null=True, blank=True)
 
-    @property
+    
+    """ @property
     def get_cart_total(self):
         total = self.product.cost_per_item * self.quantity
-        return total
+        return "{:,}".format(total) """
+    """
+    @property
+    def get_cart_items(self):
+        cartitems = self.all()
+        total = sum(self.get_cart_total for item in cartitems)
+        return total """
     
     """ @property
     def get_cart_total(self):
@@ -186,7 +202,7 @@ class CartItem(models.Model):
 
     @property
     def get_cart_total(self):
-        total = self.item.price * self.quantity
+        total = self.item.cost_per_item * self.quantity
         return total
 
 class Wallet(models.Model):

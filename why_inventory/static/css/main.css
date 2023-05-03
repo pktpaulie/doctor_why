@@ -24,88 +24,32 @@ body{
     
  /* .form-group */
 form {
-    width: 40%;
+    width: 65%;
     margin: 0 auto;
-    
-    background: #f3f7f7;
-    padding: 0.5rem 1.0rem; 
-    border-radius: 10px;
+    background: white;
+    padding: 1.0rem 1.0rem; 
+    border-radius: 5px;
+    box-shadow: 10px 5px 5px rgb(137, 136, 136);
 }
 
+#login{
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+    width: 95%;
+    background-color: black;
+}
 
+#login_btn, #signupbtn{
+    width: 50%;
+
+}
 section{
     position: relative;
     width: 100%;
     height: 100vh;
     /* background: #3586ff; */
     overflow: hidden;
-}
-
-section .wave {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100px;
-    /* background: url('/static/images/wave.png'); */
-    background-size: 1000px 100px;
-
-}
-
-
-section .wave.wave1 {
-    animation: animate 30s linear infinite;
-    z-index: 1000;
-    opacity: 1;
-    animation-delay: 0s;
-    bottom: 0;
-}
-
-
-section .wave.wave2 {
-    animation: animate2 30s linear infinite;
-    z-index: 999;
-    opacity: 0.5;
-    animation-delay: -5s;
-    bottom: 10px;
-}
-
-section .wave.wave3 {
-    animation: animate 30s linear infinite;
-    z-index: 998;
-    opacity: 0.2;
-    animation-delay: -2s;
-    bottom: 15px;
-}
-
-section .wave.wave4 {
-    animation: animate2 15s linear infinite;
-    z-index: 997;
-    opacity: 0.7;
-    animation-delay: -5s;
-    bottom: 20px;
-}
-
-@keyframes animate {
-    0%
-    {   
-        background-position-x: 0;
-    }
-    100%
-    {   
-        background-position-x: 0;
-    }
-}
-
-@keyframes animate2 {
-    0%
-    {   
-        background-position-x: 0;
-    }
-    100%
-    {   
-        background-position-x: 0;
-    }
 }
 
 p.copyright {
@@ -124,7 +68,7 @@ p.copyright {
 }
 
 .content-section{
-    background: #f3f7f7;
+    background: white;
     border-radius: 10px;
     opacity: 0.8;
     margin: 100px;
@@ -146,7 +90,7 @@ footer {
     bottom: 0;
     position: absolute;
     width: 100%;
-    background: rgb(244, 229, 212);
+    background: rgb(108, 253, 159);
     height: 80px;
     padding-top: 5px;
     margin-top: 10px;
