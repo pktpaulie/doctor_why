@@ -58,7 +58,8 @@ p.copyright {
 
 .product-card{
     border-radius: 10px;
-    border-color: rgb(144, 142, 142);
+    border-color: rgb(213, 212, 212);
+    
 }
 .content-section{
     background: #fdfbfb;
@@ -83,12 +84,13 @@ footer {
     bottom: 0;
     position: absolute;
     width: 100%;
-    background: rgb(244, 229, 212);
+    background: #5bc0de;
     height: 80px;
     padding-top: 5px;
     margin-top: 10px;
     justify-content: space-between;
     font-size: 0.7em;
+    font-weight: bold;
     
 }
 
@@ -147,6 +149,18 @@ a:hover{
 .myDIV:hover + .hide {
     display: block;
     color: black;
+}
+
+.product-btn{
+    background: grey;
+    color: white;
+    
+}
+.product-btn:hover{
+    background-color: rgb(39, 27, 27);
+    visibility: visible;
+    opacity: 0.9;
+    color: white;
 }
 
 #msg_close_btn{

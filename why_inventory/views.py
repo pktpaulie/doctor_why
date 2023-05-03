@@ -42,7 +42,7 @@ def registration(request):
     email = request.POST['user_email']
     password = request.POST['password']
     gender = request.POST['gender']
-    user_details = [user_name, email, password, gender]
+    #user_details = [user_name, email, password, gender]
     #print(user_details)
     if User.objects.filter(username=user_name).first():
         messages.error(request, 'User already exists')
@@ -204,8 +204,8 @@ def view_cart(request):
     return render(request, 'store/view_cart.html', context=context)
 
 @login_required
-def remove_from_cart(request, inventory_id):
-    product = get_object_or_404(Inventory, id=inventory_id)
+def remove_from_cart(request, pk):
+    product = get_object_or_404(Inventory, pk=pk)
     cart, created = Cart.objects.get_or_create(user=request.user)
     cart.product.remove(product)
     cart.save()

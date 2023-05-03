@@ -68,11 +68,9 @@
         </ul>
         <ul class="navbar-nav ml-auto">
           <div class="form-inline my-2 my-lg-0">
-            <!-- <a href="{% url 'store/cart' %}"></a> -->
-            <!-- View cart link -->
+            
             <a href="{% url 'view_cart' %}"> 
               <i class="fa-solid fa-cart-plus fa-lg"></i>
-             <!-- <img  id="cart-icon" src="{% static 'images/cart.png' %}"> -->
            </a>
            <p id="cart-total">{{ cartItems }}</p>
           </div>
@@ -91,12 +89,10 @@
       {% endif %}
     </div>
   </nav>  
-  
 
   <div class="container">
     <div class="justify-content-center">
-      {% if user.is_authenticated %}
-        
+      {% if user.is_authenticated %}  
         {% if messages %}
           {% for message in messages %}
             <div id="flash_message" class="alert alert-{{ messages.tags }}">
@@ -106,9 +102,7 @@
             </div>
           {% endfor %}
         {% endif %}
-        
       {% endif %}
-  
     </div>
   </div>
      
@@ -121,12 +115,6 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 <script type="module" src="/static/js/access.js" ></script>
 
-  <!-- <section>
-    <div class="wave wave1"></div>
-    <div class="wave wave1"></div>
-    <div class="wave wave1"></div>
-    <p class="copyright"> Created by Pauline Korukundo ©  2023 </p>
-  </section> -->
   <br><br><br>
 <footer>
   <div class="container">
@@ -138,7 +126,7 @@
       
       <span><i style="font-size: 30px;" class="fa-brands fa-instagram" style="color: #01060e;"></i></span>
       <span><i style="font-size: 30px;" class="fa-brands fa-linkedin"></i></span>
-      <span style="font-size: 0.7em;">Created by Pauline Korukundo ©  2023</span>
+      <strong>Created by Pauline Korukundo ©  2023</strong>
       <!-- <p class="copyright"> Created by Pauline Korukundo ©  2023 </p> -->
     
   </div>

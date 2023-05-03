@@ -90,12 +90,13 @@ footer {
     bottom: 0;
     position: absolute;
     width: 100%;
-    background: rgb(108, 253, 159);
+    background: #5bc0de;
     height: 80px;
     padding-top: 5px;
     margin-top: 10px;
     justify-content: space-between;
-    font-size: 0.7em;
+    /* font-size: 0.7em; */
+    font-weight: bold;
     
 }
 /* footer {

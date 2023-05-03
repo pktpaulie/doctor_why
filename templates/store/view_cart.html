@@ -53,6 +53,8 @@
 						</div>
 					</div>
 					<div style="flex:1"><p>UGX{{item.cost_per_item}}</p></div>
+					<div><a  class="btn btn-outline-dark" href="{% url 'remove' cart.product.id %}">Remove</a></div>
+					
 				</div>
 				{% endfor %}
 			</div>
