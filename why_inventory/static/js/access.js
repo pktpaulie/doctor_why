@@ -1,4 +1,4 @@
-class MyFooter extends HTMLElement {
+/* class MyFooter extends HTMLElement {
   connectedCallback(){
     this.innerHTML = `
       <footer>
@@ -7,7 +7,7 @@ class MyFooter extends HTMLElement {
   }
 }
 customElements.define('my-footer', MyFooter)
-
+ */
 function hide(target){
   var target = document.getElementById(target);
   target.setAttribute("style", "display:none;");
@@ -82,3 +82,4 @@ function addCookieItem(productId, action){
 	
 	location.reload()
 }
+

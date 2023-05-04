@@ -32,29 +32,13 @@
 
 		<div class="col-lg-6">
 			<div class="box-element" id="form-wrapper">
-				<form id="form" method="POST" action = "">
-					{% csrf_token %}
-    				{{dispense_form | crispy}}
-					 <div id="user-info">
-						<div class="form-field">
-							<input required class="form-control" type="text" name="customer_name" placeholder="Customer Name...">
-						</div>
-						<div class="form-field">
-							<input required class="form-control" type="value" name="paid_amount" placeholder="Amount Received...">
-						</div>
-					</div> 
-				
-					<hr>
-					<input id="form-button" class="btn btn-success btn-block" type="submit" value="Dispense">
-				</form>
-
-				<br>
+				<br><br>
 				<div class="container">
-					<form method="POST" action = "">
+					<form method="POST" action = "{% url 'dispense_item' %}">
 					  
 					  {% csrf_token %}
 					  {{sales_form | crispy}}
-					  <input type = "submit" class="btn btn-secondary btn"type="button">
+					  <input type = "submit" class="btn btn-success btn-block"type="button" value="Dispense">
 					</form>
 				</div>
 			</div>

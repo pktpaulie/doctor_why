@@ -44,11 +44,11 @@ class Inventory(models.Model):
     cost_per_item = models.PositiveIntegerField(default=1, null=True, blank=True)
     #quantity_in_stock = models.IntegerField(validators=[MinValueValidator(0)])
     quantity_in_stock = models.IntegerField(default=0, null=True, blank=True, validators=[MinValueValidator(0)])
-    quantity_sold = models.IntegerField(default=0, null=False, blank=False)
+    quantity_sold = models.IntegerField(default=1, null=False, blank=False)
     received_quantity = models.PositiveIntegerField(default = 0, null = True, blank = True)
     sales = models.IntegerField(default=0, null=False, blank=False)
     category = models.ForeignKey(Category, on_delete=models.PROTECT, null=True, blank=True)
-    description = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     minimum_stock_level = models.IntegerField(default=0, null=False, blank=True)
     expiry_date = models.DateField(null=True, blank=True)
     stock_date = models.DateField(auto_now_add=True)
@@ -108,26 +108,7 @@ class Product(models.Model):
     class Meta:
         ordering = ['title']
 
-class Sale(models.Model):
-    sold_item = models.ForeignKey(Inventory, on_delete=models.CASCADE, null=True, blank=True)
-    sold_quantity = models.IntegerField(default = 0, null = False, blank = True)
-    unit_price = models.IntegerField(default = 0, null = False, blank = True)
-    paid_amount = models.IntegerField(default = 0, null = False, blank = True)
-    customer_name = models.CharField(max_length=50, null=True, blank=True)
-    sold_date = models.DateTimeField(auto_now_add=True)
-    # = models.ForeignKey(Cart')
 
-    def get_bill(self):
-        total_bill = self.sold_quantity * self.unit_price
-        # convert total bill to integer and return value
-        return int(total_bill)
-    
-    def get_balance(self):
-        customer_balance = self.get_bill - self.paid_amount
-        return abs(int(customer_balance))
-    
-    def __str__(self):
-        return self.sold_item.name
   
 class UserProfile(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE, null=True, blank=True)
@@ -156,7 +137,7 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
     product = models.ForeignKey(Inventory, on_delete=models.SET_NULL, blank=True, null=True)
-    quantity = models.IntegerField(default=0, null=True, blank=True)
+    quantity_sold = models.IntegerField(default=1, null=False, blank=False)
     date_added = models.DateTimeField(auto_now_add=True, null=True)
 
 class Cart(models.Model):
@@ -170,7 +151,22 @@ class Cart(models.Model):
     paid_amount = models.IntegerField(default = 0, null = False, blank = True)
     customer_name = models.CharField(max_length=50, null=True, blank=True)
 
+    def get_total(self):
+        total = sum([self.quantity * product.cost_per_item for product in self.product.all()])
+        # convert total to int
+        return int(total)
     
+    def get_balance(self):
+        balance = self.get_total() - self.paid_amount
+        if balance >= 0:
+            return (int(balance))
+        else:
+            return 0
+
+    def __str__(self):
+        return f"{self.id}"
+    
+
     """ @property
     def get_cart_total(self):
         total = self.product.cost_per_item * self.quantity
@@ -195,15 +191,36 @@ class Cart(models.Model):
  """
 
 class CartItem(models.Model):
-    item = models.ManyToManyField(Inventory)
+    product = models.ManyToManyField(Inventory)
     quantity = models.PositiveIntegerField(default=1, null=True)
     complete = models.BooleanField(default=False)
     cart = models.ForeignKey(Cart, on_delete=models.SET_NULL, null=True)
 
     @property
     def get_cart_total(self):
-        total = self.item.cost_per_item * self.quantity
+        total = self.product.cost_per_item * self.quantity
         return total
+    
+class Sale(models.Model):
+    product = models.ForeignKey(CartItem, on_delete=models.CASCADE, null=True, blank=True)
+    #quantity = models.ForeignKey(CartItem, on_delete=models.SET_NULL, null=True, blank = True)
+    cost_per_item = models.ForeignKey(Inventory, on_delete=models.SET_NULL, null=True, blank = True)
+    paid_amount = models.IntegerField(default = 0, null = False, blank = True)
+    customer_name = models.CharField(max_length=50, null=True, blank=True)
+    sold_date = models.DateTimeField(auto_now_add=True)
+    # = models.ForeignKey(Cart')
+
+    def get_bill(self):
+        total_bill = self.product.quantity * self.cost_per_item
+        # convert total bill to integer and return value
+        return int(total_bill)
+    
+    def get_balance(self):
+        customer_balance = self.get_bill - self.paid_amount
+        return abs(int(customer_balance))
+    
+    def __str__(self):
+        return f"{self.customer_name}"
 
 class Wallet(models.Model):
     balance = models.IntegerField(validators=[MinValueValidator(0)])

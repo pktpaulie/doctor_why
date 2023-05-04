@@ -22,14 +22,20 @@ def index(request):
     stock = sum([inventory.quantity_in_stock for inventory in inventories])
     inventory_filters = Inventory_Filter(request.GET, queryset = inventories)
     inventories = inventory_filters.qs
+    try:
+        cart = Cart.objects.get(complete=False)
+        cartItems = cart.product.all().count()
+        last_bought = cart.product.all().last
+    except:
+        cartItems= None
+        last_bought = None
     
-    cart, created = Cart.objects.get_or_create(complete=False)    
-    cartItems = cart.product.all().count()
     context = {
         'inventories': inventories,
         'inventory_filters': inventory_filters,
         'cartItems': cartItems,
         'stock': stock,
+        'last_bought': last_bought,
     }
     return render(request, "index.html", context)
 
@@ -135,25 +141,8 @@ def update_inventory(request, pk):
         'form': updateForm
         }
     return render(request, 'inventory/inventory_update.html', {'form': updateForm})
-    
-    # def store(request):
-    #     context = {
-
-    #     }
-    #     return render(request, 'store/store.html', context)
 
 
-@login_required
-def sales_records(request):
-    sales = Sale.objects.all()
-    total = sum([items.amount_received for items in sales])
-    balance = sum([items.get_balance() for items in sales])
-    net = total - balance
-    return render(request, 'products/all_sales.html', 
-                  {'sales': sales,
-                  'total': total,
-                  'balance': balance,
-                  'net': net})
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
@@ -191,7 +180,16 @@ def add_to_cart(request, pk):
 
 @login_required
 def view_cart(request):
-    cart, created = Cart.objects.get_or_create(user=request.user, complete=False)
+    try:
+        cart = Cart.objects.get(user=request.user, complete=False)
+        items = cart.product.all()
+        total = sum([item.cost_per_item for item in items])
+        cartItems = cart.product.all().count()
+    except:
+        items = None
+        total = None
+        cartItems = None
+   
     items = cart.product.all()
     total = sum([item.cost_per_item for item in items])
     cartItems = cart.product.all().count()
@@ -214,16 +212,13 @@ def remove_from_cart(request, pk):
 
 
 def checkout(request):
-    dispensed_item = Inventory.objects.all()
     dispense_form = DispenseForm(request.POST)
     if request.user.is_authenticated:
         order, created = Cart.objects.get_or_create(user=request.user, complete=False)
         items = order.product.all()
         cartItems = items.count()
         total = sum([item.cost_per_item for item in items])
-        #balance = sum([items.get_balance() for items in sales])
-        #customer_balance = total - self.paid_amount
-        #return abs(int(customer_balance)) 
+        
     else:
 		#Create empty cart for now for non-logged in user
         items = []
@@ -231,71 +226,78 @@ def checkout(request):
         cartItems = order['total']
         
 
-    context = {'items':items, 'order':order, 'cartItems':cartItems, 'total':total}
+    context = {'items':items, 
+               'order':order, 
+               'cartItems':cartItems, 
+               'total':total,
+               
+               'sales_form': dispense_form,
+               }
     return render(request, 'store/checkout.html', context)
 
-def updateItem(request):
-	data = json.loads(request.body)
-	productId = data['itemId']
-	action = data['action']
-	print('Action:', action)
-	print('Product:', productId)
+@login_required
+def sales_records(request):
+    sales = Cart.objects.all()
+    cartItems = sales.count()
+    total = sum([items.paid_amount for items in sales])
+    customer_balance = sum([items.get_balance() for items in sales])
+    net = total - customer_balance
+    return render(request, 'products/all_sales.html', 
+                  {'sales': sales,
+                  'total': total,
+                  'cartItems': cartItems,
+                  'customer_balance': customer_balance,
+                  'net': net})
 
-	product = Inventory.objects.get(id=productId)
-	order, created = Order.objects.get_or_create(user=request.user, complete=False)
+# handle the receipt issuing
+@login_required
+def receipt(request):
+    sales = Cart.objects.all().order_by('-id')
+    total = sum([items.paid_amount for items in sales])
+    try:
+        items = Cart.objects.get(user=request.user, complete=False)
+        cartItems = cart.product.all()
+        #total = sum([item.cost_per_item for item in items])
+        cartItems = cart.product.all().count()
+    except:
+        items = None
+        
+        cartItems = None
+    
+    customer_balance = sum([items.get_balance() for items in sales])
+    net = total - customer_balance
+    return render(request, 'store/receipt.html', 
+                  {'sales': sales, 
+                   'total':total,
+                    'items':items, 
+                    'cartItems': cartItems,
+                    'net': net,})
 
-	orderItem, created = OrderItem.objects.get_or_create(order=order, product=product)
 
-	if action == 'add':
-		orderItem.quantity = (orderItem.quantity + 1)
-	elif action == 'remove':
-		orderItem.quantity = (orderItem.quantity - 1)
-
-	orderItem.save()
-
-	if orderItem.quantity <= 0:
-		orderItem.delete()
-
-	return JsonResponse('Item was added', safe=False)
-
-def processOrder(request):
-	transaction_id = datetime.datetime.now().timestamp()
-	data = json.loads(request.body)
-
-	if request.user.is_authenticated:
-		
-		order, created = Order.objects.get_or_create(user=request.user, complete=False)
-		total = float(data['form']['total'])
-		order.transaction_id = transaction_id
-
-		if total == order.get_cart_total:
-			order.complete = True
-		order.save()
-
-	else:
-		print('User is not logged in')
-
-	return JsonResponse('Payment submitted..', safe=False)
+def receipt_detail(request, pk):
+    receipt = Cart.objects.get(pk = pk)
+    return render(request, 'store/receipt_detail.html', {'receipt': receipt})
 
 
 @login_required
-def dispense_item(request, pk):
-    dispensed_item = Inventory.objects.get(id = pk)
+def dispense_item(request):
+    cart = Cart.objects.get(user=request.user, complete=False)
+    dispensed_items = cart.product.all()
+    
     dispense_form = DispenseForm(request.POST)
     if request.method == 'POST':
         if dispense_form.is_valid():
             new_sale = dispense_form.save(commit = False)
-            new_sale = dispensed_item
-            new_sale.unit_price = dispensed_item.paid_amount
+            new_sale.paid_amount = request.POST['paid_amount']
+            new_sale.customer_name = request.POST['customer_name']
             new_sale.save()
-
-            # to keep track of stock remaining after sales
-            issued_quantity = int(request.POST['quantity'])
-            dispensed_item.quantity_in_stock -= issued_quantity
-            dispensed_item.save()
-            print(dispensed_item.name)
-            print(request.POST['quantity'])
-            print(dispensed_item.quantity_in_stock)
-
+            for dispensed_item in dispensed_items:
+                # to keep track of stock remaining after sales
+                issued_quantity = cart.quantity
+                product = Inventory.objects.get(id=dispensed_item.id)
+                product.quantity_in_stock -= issued_quantity
+                product.save()
+                
+            complete=True
             return redirect('receipt')
-    return render(request, 'cart/checkout.html', {'sales_form': dispense_form})
+    return render(request, 'store/checkout.html', {'sales_form': dispense_form})

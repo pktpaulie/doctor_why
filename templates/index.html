@@ -16,25 +16,28 @@
       <div class="col-md-4">
         <div class="card my-card shadow text-center">
           <h4>Total Stock</h4>
-          <h5>{{ stock }}</h5>
+          <h6>{{ stock }}</h6>
         </div>
       </div>
       <div class="col-md-4">
         <div class="card my-card shadow text-center">
-          <h4>Stock Status</h4>
-          <h5>{{ status }}</h5>
+          <h4>Stock Alerts</h4>
+          {% for inventory in inventories %}
+          {% if inventory.get_low_stock %}
+          <span class="flash">Check Low Stock: {{ inventory.name }}</span></a>
+          {% endif %}
+          {% endfor %}
         </div>
       </div>
       <div class="col-md-4">
         <div class="card my-card shadow text-center">
-          <h4>Total Stock</h4>
-          <h5>{{ stock }}</h5>
+          <h4>Recently Ordered</h4>
+          <h6>{{ last_bought }}</h6>
         </div>
       </div>
     </div>
   </div>
 </div>
-
 
 
 <div class = "container">
@@ -84,7 +87,12 @@
               <br>
               <!-- <img class="thumbnail" src="{{ inventory.image_url }}"> -->
               <div class="text-center">
-                <a class="btn btn-outline-dark btn-sm" href="{% url 'add_to_cart' inventory.id %}">Order</a>
+                <form action="{% url 'add_to_cart' inventory.id %}" class="d-inline">
+                  <input type="hidden" name="prod_id" value="inventory.id">
+                  <button type="submit" class="btn btn-outline-dark btn-sm">Dispense</button>
+                  <!-- <a class="btn btn-outline-dark btn-sm" href="{% url 'add_to_cart' inventory.id %}">Dispense</a> -->
+                </form>
+                
                 <!-- <a class="btn btn-outline-success btn-sm" href="{% url 'per_product' inventory.id %}">View</a> -->
                 <a class="btn btn-outline-dark btn-sm" href="{% url 'update_inventory' inventory.id %}">
                   <span class="{% if inventory.get_low_stock %}flash{% endif %}">Update</span></a>

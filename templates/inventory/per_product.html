@@ -10,24 +10,26 @@
 
     <!-- <div class="content-section"> -->
         <div class="row mx-auto justify-content-center">
-            
-            <div class="card m-2" >
-                <div class="card-body">
-                    <h5 class="cart-title text-center">Product</h5>
-                    <div style="font-size: 30px;" class="text-center">
-                        <span><i class="fab fa-product-hunt"></i></span>
-                        {% thumbnail inventory.images "150x75" as im %}
-                            <img src="{{ im.url }}">
-                        {% endthumbnail %}
+            <div class="col-lg-12 col-md-12 col-xs-12">
+                <div class="card m-2" >
+                    <div class="card-body">
+                        <h5 class="cart-title text-center">Product</h5>
+                        <div style="font-size: 30px;" class="text-center">
+                            <span><i class="fab fa-product-hunt"></i></span>
+                            {% thumbnail inventory.images "150x75" as im %}
+                                <img src="{{ im.url }}">
+                            {% endthumbnail %}
+                        </div>
+                        <h3 class="text-center">{{ inventory.name }}</h3>
+                        <!-- <div class="text-center">
+                            {% thumbnail inventory.images "150x75" as im %}
+                                <img src="{{ im.url }}">
+                            {% endthumbnail %}
+                        </div> -->
                     </div>
-                    <h3 class="text-center">{{ inventory.name }}</h3>
-                    <!-- <div class="text-center">
-                        {% thumbnail inventory.images "150x75" as im %}
-                            <img src="{{ im.url }}">
-                        {% endthumbnail %}
-                    </div> -->
                 </div>
             </div>
+            
             <div class="card m-2" >
                 <div class="card-body">
                     <h5 class="cart-title text-center">Description</h5>

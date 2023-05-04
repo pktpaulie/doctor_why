@@ -1,0 +1,58 @@
+{% extends 'products/base.html' %}
+{% block content %}
+
+<br></br>
+
+<div class = "container">
+<h1 class = "text-center">TOTAL SALES MADE</h1><br>
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Total Sales</th>
+        
+        <th scope="col">Net Amount</th>
+      </tr>
+    </thead>  
+    <tbody style="background-color: whitesmoke;">
+      <tr>    
+        <td>UGX{{total}}</td>
+        
+        <td>UGX{{net}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<br></br>
+
+<div class = "container">
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Customer name</th>
+        <th scope="col">Item Bought</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Unit Price(UGX)</th>
+        <th scope="col">Total Cost</th>
+        <th scope="col">Sales</th>
+        
+      </tr>
+    </thead>
+    {% for sale in sales %}
+    <tbody style="background-color: whitesmoke;">
+      <tr>    
+        <td>{{sale.customer_name | title}}</td>
+        <td>{{sale.transaction_id | title}}</td>
+        <td>{{cartItems}}</td>
+        <td>UGX{{sale.product.cost_per_item}}</td>
+        <td>UGX{{sale.get_total}}</td>
+        <td>UGX{{sale.paid_amount}}</td>
+        
+      </tr>
+    </tbody>
+    {% endfor %}
+  </table>
+</div>
+
+
+
+{% endblock %}
