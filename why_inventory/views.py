@@ -212,7 +212,7 @@ def remove_from_cart(request, pk):
 
 
 def checkout(request):
-    dispense_form = DispenseForm(request.POST)
+    dispense_form = SalesForm(request.POST)
     if request.user.is_authenticated:
         order, created = Cart.objects.get_or_create(user=request.user, complete=False)
         items = order.product.all()
@@ -284,12 +284,13 @@ def dispense_item(request):
     cart = Cart.objects.get(user=request.user, complete=False)
     dispensed_items = cart.product.all()
     
-    dispense_form = DispenseForm(request.POST)
+    dispense_form = SalesForm(request.POST)
     if request.method == 'POST':
         if dispense_form.is_valid():
             new_sale = dispense_form.save(commit = False)
             new_sale.paid_amount = request.POST['paid_amount']
             new_sale.customer_name = request.POST['customer_name']
+            new_sale.bill = request.POST['bill']
             new_sale.save()
             for dispensed_item in dispensed_items:
                 # to keep track of stock remaining after sales

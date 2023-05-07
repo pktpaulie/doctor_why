@@ -27,8 +27,8 @@ class UpdateInventoryForm(ModelForm):
 # modeling a form that we shall use to register a sale for a product
 class SalesForm(ModelForm):
     class Meta:
-        model = Cart
-        fields = ['customer_name', 'paid_amount']
+        model = Sale
+        fields = ['customer_name', 'paid_amount', 'bill']
 
 class DispenseForm(ModelForm):
     class Meta:

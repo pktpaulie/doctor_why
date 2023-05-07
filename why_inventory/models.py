@@ -202,22 +202,28 @@ class CartItem(models.Model):
         return total
     
 class Sale(models.Model):
-    product = models.ForeignKey(CartItem, on_delete=models.CASCADE, null=True, blank=True)
+    sale_id = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True, blank=True)
     #quantity = models.ForeignKey(CartItem, on_delete=models.SET_NULL, null=True, blank = True)
+    quantity = models.PositiveIntegerField(default=1, null=True)
     cost_per_item = models.ForeignKey(Inventory, on_delete=models.SET_NULL, null=True, blank = True)
     paid_amount = models.IntegerField(default = 0, null = False, blank = True)
     customer_name = models.CharField(max_length=50, null=True, blank=True)
     sold_date = models.DateTimeField(auto_now_add=True)
+    bill = models.IntegerField(default = 0, null = False, blank = True)
     # = models.ForeignKey(Cart')
 
-    def get_bill(self):
+    """ def get_bill(self):
         total_bill = self.product.quantity * self.cost_per_item
         # convert total bill to integer and return value
-        return int(total_bill)
+        return int(total_bill) """
+    
     
     def get_balance(self):
-        customer_balance = self.get_bill - self.paid_amount
-        return abs(int(customer_balance))
+        customer_balance = self.paid_amount - self.bill
+        if customer_balance >= 0:
+            return (int(customer_balance))
+        else:
+            return 0
     
     def __str__(self):
         return f"{self.customer_name}"

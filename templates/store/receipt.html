@@ -10,7 +10,7 @@
       <h6 class="card-text">Item : {{sale.product.name}}</h6>
       <h6 class="card-text">Amount Paid:  UGX{{ sale.paid_amount }}</h6>
       <h6 class="card-text">Quantity: {{ cartItems }}</h6>
-      <h2>Total Price :  UGX{{ sale.get_total }}</h2>
+      <h2>Total Price :  UGX{{ sale.bill }}</h2>
       <div style="flex: 1">
         <h6 class="card-text">Change Collected:  UGX{{ sale.net }}</h6>
         <a href="{% url 'receipt_detail' sale.id %}">
