@@ -29,13 +29,13 @@ SECRET_KEY = 'django-insecure-n#d6%9m-%7xl_tq45y$1p3m@y8@l(2rj@om402a^j*p8g)ise%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+#ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
 INSTALLED_APPS = [
-    #"doctorwhy",
+    'doctor_why',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -88,12 +88,12 @@ WSGI_APPLICATION = 'doctor_why.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env("DB_NAME"),
-        'USER': env("DB_USER"),
-        'PASSWORD': env("DB_PASSWORD"),
-        'HOST': env("DB_HOST"),
-        'PORT': env("DB_PORT"),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'doctor_why',
+        'USER': 'postgres',
+        'PASSWORD': 'nusty1e',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -136,7 +136,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'why_inventory/static')
 ]
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/images/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'why_inventory/static/images')
