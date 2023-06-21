@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 
+import dj_database_url
+
 import environ
 env = environ.Env()
 environ.Env.read_env()
@@ -27,7 +29,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'django-insecure-n#d6%9m-%7xl_tq45y$1p3m@y8@l(2rj@om402a^j*p8g)ise%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 #ALLOWED_HOSTS = []
 ALLOWED_HOSTS = ['*']
@@ -85,7 +87,7 @@ WSGI_APPLICATION = 'doctor_why.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -95,6 +97,12 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '5432',
     }
+}
+"""
+
+
+DATABASES = {
+    'default': dj_database_url.parse(env('DATABASE_URL'))
 }
 
 # Password validation
