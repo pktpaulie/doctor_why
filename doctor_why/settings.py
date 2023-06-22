@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'sorl.thumbnail',
     'why_inventory',
-    
+    'whitenoise',
 ]
 
 MIDDLEWARE = [
