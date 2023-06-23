@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'sorl.thumbnail',
     'why_inventory',
-    'whitenoise',
+    #'whitenoise',
 ]
 
 MIDDLEWARE = [
@@ -60,7 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    #'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'doctor_why.urls'
@@ -144,7 +144,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'why_inventory/static')
 ]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # FOR deployment
 #STATIC_ROOT = BASE_DIR / 'productionfiles'
 #STATIC_ROOT = os.path.join(BASE_DIR, 'productionfiles')
 
